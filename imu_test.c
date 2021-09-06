@@ -1,3 +1,8 @@
+/*
+
+(c)Kouhei Ito
+
+*/
 /* Includes ------------------------------------------------------------------*/
 #include <string.h>
 #include <stdio.h>
