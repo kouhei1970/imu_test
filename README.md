@@ -1,4 +1,4 @@
-# Raspberry-Pi-Pico-and-LSM9DS1-with-SPI
+# imu_test
 Raspberry Pi Pico で LSM9DS1 を SPIでアクセスするサンプル
 
 ## ビルド手順
