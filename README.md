@@ -11,7 +11,7 @@ Raspberry Pi Pico で LSM9DS1 を SPIでアクセスするサンプル
 pico-sdkディレクトリがある場所で
 
 ```
-git clone https://github.com/kouhei1970/hello_pwm.git
+git clone https://github.com/kouhei1970/imu_test.git
 mkdir build
 cd build
 cmake ..
