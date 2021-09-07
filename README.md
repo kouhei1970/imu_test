@@ -5,13 +5,14 @@ Raspberry Pi Pico で LSM9DS1 を SPIでアクセスするサンプル
 
 念の為
 
-`export PICO_SDK_PATH=../../pico-dsk`
+`export PICO_SDK_PATH=../../pico-skk`
 
 
 pico-sdkディレクトリがある場所で
 
 ```
 git clone https://github.com/kouhei1970/imu_test.git
+cd imu_test
 mkdir build
 cd build
 cmake ..
