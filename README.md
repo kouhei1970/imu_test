@@ -5,7 +5,7 @@ Raspberry Pi Pico で LSM9DS1 を SPIでアクセスするサンプル
 
 念の為
 
-`export PICO_SDK_PATH=../../pico-skk`
+`export PICO_SDK_PATH=../../pico-sdk`
 
 
 pico-sdkディレクトリがある場所で
