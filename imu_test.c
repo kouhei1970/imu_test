@@ -1,8 +1,3 @@
-/*
-
-(c)Kouhei Ito
-
-*/
 /* Includes ------------------------------------------------------------------*/
 #include <string.h>
 #include <stdio.h>
@@ -44,7 +39,9 @@ static float magnetic_field_mgauss[3];
 static lsm9ds1_id_t whoamI;
 static lsm9ds1_status_t reg;
 static uint8_t rst;
-static uint8_t tx_buffer[1000];
+static uint8_t tx_buffer_imu[1000];
+static uint8_t tx_buffer_mag[1000];
+
 
 /* Private functions ---------------------------------------------------------*/
 /*
@@ -125,8 +122,8 @@ void lsm9ds1_read_data_polling(void)
   lsm9ds1_gy_filter_out_path_set(&dev_ctx_imu,
                                  LSM9DS1_LPF1_HPF_LPF2_OUT);
   /* Set Output Data Rate / Power mode */
-  lsm9ds1_imu_data_rate_set(&dev_ctx_imu, LSM9DS1_IMU_59Hz5);
-  lsm9ds1_mag_data_rate_set(&dev_ctx_mag, LSM9DS1_MAG_UHP_10Hz);
+  lsm9ds1_imu_data_rate_set(&dev_ctx_imu, LSM9DS1_IMU_476Hz);
+  lsm9ds1_mag_data_rate_set(&dev_ctx_mag, LSM9DS1_MAG_MP_560Hz);
 
   /* Read samples in polling mode (no int) */
   while (1) {
@@ -153,11 +150,10 @@ void lsm9ds1_read_data_polling(void)
                                data_raw_angular_rate[1]);
       angular_rate_mdps[2] = lsm9ds1_from_fs2000dps_to_mdps(
                                data_raw_angular_rate[2]);
-      sprintf((char *)tx_buffer,
-              "IMU - [mg]:%4.2f\t%4.2f\t%4.2f\t[mdps]:%4.2f\t%4.2f\t%4.2f\r\n",
+      sprintf((char *)tx_buffer_imu,
+              "IMU - [mg]:\t%4.2f\t%4.2f\t%4.2f\t[mdps]:\t%4.2f\t%4.2f\t%4.2f\t",
               acceleration_mg[0], acceleration_mg[1], acceleration_mg[2],
               angular_rate_mdps[0], angular_rate_mdps[1], angular_rate_mdps[2]);
-      tx_com(tx_buffer, strlen((char const *)tx_buffer));
     }
 
     if ( reg.status_mag.zyxda ) {
@@ -170,11 +166,16 @@ void lsm9ds1_read_data_polling(void)
                                    data_raw_magnetic_field[1]);
       magnetic_field_mgauss[2] = lsm9ds1_from_fs16gauss_to_mG(
                                    data_raw_magnetic_field[2]);
-      sprintf((char *)tx_buffer, "MAG - [mG]:%4.2f\t%4.2f\t%4.2f\r\n",
+      sprintf((char *)tx_buffer_mag, "MAG - [mG]:\t%4.2f\t%4.2f\t%4.2f\r\n",
               magnetic_field_mgauss[0], magnetic_field_mgauss[1],
               magnetic_field_mgauss[2]);
-      tx_com(tx_buffer, strlen((char const *)tx_buffer));
     }
+    tx_com(tx_buffer_imu, strlen((char const *)tx_buffer_imu));
+    tx_com(tx_buffer_mag, strlen((char const *)tx_buffer_mag));
+
+    sleep_ms(2);
+    //uint64_t time_us_64	(		)	
+
   }
 }
 
@@ -359,7 +360,7 @@ static void platform_init(void)
   printf("Hello, LSM9DS1! Reading raw data from registers via SPI...\n");
 
   // This example will use SPI0 at 0.5MHz.
-  spi_init(SENSOR_BUS, 10 * 1000);
+  spi_init(SENSOR_BUS, 500 * 1000);
   gpio_set_function(PIN_MISO, GPIO_FUNC_SPI);
   gpio_set_function(PIN_SCK, GPIO_FUNC_SPI);
   gpio_set_function(PIN_MOSI, GPIO_FUNC_SPI);
